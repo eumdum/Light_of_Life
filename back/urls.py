@@ -16,8 +16,16 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("웰켐 Light of Life 프로젝트><")
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path('admin/', admin.site.urls),
+    path('api/', include('diary.urls')),  # /api/diaries/ 로 접근 가능
+    path('', home) # 루트페이지 추가
 ]
+
+# 목적 : api경로 설정
