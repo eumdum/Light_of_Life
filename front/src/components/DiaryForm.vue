@@ -1,3 +1,111 @@
+// ✅ Tailwind CSS가 이미 설치되었다고 가정하고 작성
+
+// 📁 src/components/DiaryForm.vue
+<template>
+  <div class="min-h-screen bg-[#869A69] flex justify-center items-start pt-20">
+    <div class="bg-white p-10 rounded-2xl shadow-lg w-full max-w-2xl">
+      <h1 class="text-2xl font-bold text-center mb-6">감정 일기 작성</h1>
+      <label for="content" class="block mb-2 font-semibold">일기쓰기</label>
+      <textarea
+        id="content"
+        v-model="content"
+        rows="10"
+        class="w-full border rounded-md p-4 text-base resize-y"
+        placeholder="오늘 있었던 일을 자유롭게 적어보세요."
+      ></textarea>
+      <button
+        class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white py-2 px-4 rounded-md text-lg"
+        @click="submitDiary"
+      >
+        저장
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import axios from 'axios'
+
+const content = ref('')
+
+const submitDiary = async () => {
+  try {
+    await axios.post('http://127.0.0.1:8000/api/diaries/', {
+      content: content.value,
+    })
+    alert('일기가 저장되었습니다!')
+    content.value = ''
+  } catch (error) {
+    console.error('저장 실패:', error)
+    alert('저장에 실패했습니다.')
+  }
+}
+</script>
+
+
+// 📁 src/components/DiaryList.vue
+<template>
+  <div class="min-h-screen bg-gray-100 py-10 px-4">
+    <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow">
+      <h2 class="text-2xl font-bold mb-6">감정 일기 목록</h2>
+      <ul>
+        <li
+          v-for="(diary, index) in diaries"
+          :key="index"
+          class="border-b py-4"
+        >
+          <p class="text-gray-800 font-medium">{{ diary.content }}</p>
+          <p class="text-sm text-gray-500">감정: {{ diary.emotion }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+
+const diaries = ref([])
+
+onMounted(async () => {
+  try {
+    const res = await axios.get('http://127.0.0.1:8000/api/diaries/')
+    diaries.value = res.data
+  } catch (e) {
+    console.error('불러오기 실패:', e)
+  }
+})
+</script>
+
+
+// 📁 src/router/index.js
+import { createRouter, createWebHistory } from 'vue-router'
+import DiaryForm from '@/components/DiaryForm.vue'
+import DiaryList from '@/components/DiaryList.vue'
+
+const routes = [
+  {
+    path: '/',
+    name: 'WriteDiary',
+    component: DiaryForm,
+  },
+  {
+    path: '/diaries',
+    name: 'DiaryList',
+    component: DiaryList,
+  },
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+})
+
+export default router
+
+<!--
 <template>
   <div class="diary-form">
     <h3>오늘의 일기</h3>
@@ -136,3 +244,4 @@ const submitDiary = async () => {
   border-radius: 4px;
 }
 </style>
+-->

@@ -5,7 +5,8 @@ class DiarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Diary
         fields = ['id', 'content', 'emotion', 'created_at']
-
+        read_only_fields = ['emotion', 'created_at', 'id'] # emotion, created_at, id를 읽기 전용으로 설정
+        
 # 목적 : Django 객체(Diary)를 프론트(Vue)와 주고받기 위해 JSON 형태로 변환해주는 도구
 
 # ModelSerializer를 쓰면 자동으로 모델 필드를 JSON으로 변환해줘
