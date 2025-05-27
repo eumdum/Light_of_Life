@@ -4,6 +4,8 @@
 <template>
   <div class="min-h-screen bg-[#869A69] flex justify-center items-start pt-20">
     <div class="bg-white p-10 rounded-2xl shadow-lg w-full max-w-2xl">
+        <div class="p-4 bg-blue-500 text-white"> Tailwind CSS 테스트!
+  </div>
       <h1 class="text-2xl font-bold text-center mb-6">감정 일기 작성</h1>
       <label for="content" class="block mb-2 font-semibold">일기쓰기</label>
       <textarea
