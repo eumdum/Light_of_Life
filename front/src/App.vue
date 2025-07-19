@@ -1,111 +1,50 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div class="min-h-screen bg-[#869a69] flex flex-col items-center pt-12 sm:pt-20 px-4">
-    <div class="w-full max-w-2xl lg:max-w-3xl xl:max-w-4xl flex flex-col items-center">
-      <h2 class="text-white text-2xl sm:text-3xl font-bold mb-8 text-center">
-        오늘은 무슨 일이 있었나요?
-      </h2>
-
-      <textarea
-        class="w-full p-4 bg-white border border-gray-300 rounded-lg shadow-lg focus:outline-none focus:ring-4 focus:ring-[#B8CBA5] focus:border-transparent resize-y text-gray-800 placeholder-gray-500"
-        rows="12"
-        placeholder="여기에 하루를 기록해보세요..."
-      ></textarea>
-      <button
-        class="mt-8 px-10 py-3 bg-[#607A4C] hover:bg-[#506A3C] text-white text-lg font-semibold rounded-lg shadow-xl focus:outline-none focus:ring-4 focus:ring-[#A5C9A5] focus:ring-opacity-75 transition-all duration-200 ease-in-out transform hover:scale-105"
-      >
-        저장
-      </button>
+  <div class="min-h-screen bg-gray-100">
+    <header class="bg-blue-700 text-white p-4 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <!-- <h1 class="text-xl font-bold">감정분석 음악추천 일기</h1> -->
       </div>
+    </header>
+    
+    <main>
+      <router-view />
+    </main>
+    
+    <footer class="bg-gray-800 text-white p-4 mt-8">
+      <div class="container mx-auto text-center">
+        <!-- <p>© 2023 감정분석 음악추천 일기 앱</p> -->
+      </div>
+    </footer>
   </div>
 </template>
 
-<style scoped>
-/* 이 컴포넌트에만 적용되는 추가 스타일이 필요하다면 여기에 작성합니다. */
-</style>
-<!--
-<template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+<script>
+export default {
+  name: 'App'
+}
+</script>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
-</template>
-
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
+<style>
+/* 전역 스타일 */
+body {
+  /* 메인 컬러보다 아주 연한 톤으로 설정해 가독성을 높임 */
+  background-color: #a8b69a; 
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  margin: 0;
+  color: #333;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+#app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+/* 모든 페이지에서 사용할 수 있는 컬러 변수 */
+:root {
+  --primary-color: #869a69;
+  --text-dark: #333;
+  --text-light: #f5f5f5;
+  --bg-light: #ffffff;
+  --border-color: #e5e7eb;
 }
 </style>
--->

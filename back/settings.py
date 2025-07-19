@@ -25,7 +25,23 @@ SECRET_KEY = "django-insecure-zmh!!s63rnwt_l5f2oil!($)lm9*6u#h$jw17lzrrg=@#=87sv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*'] # 도메인 주소 따면 그걸로 변경!
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
 
 
 # Application definition
@@ -38,22 +54,32 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "diary",
     "corsheaders",
+    "diary.apps.DiaryConfig",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True  # 또는 CORS_ALLOWED_ORIGINS에 Vue dev URL을 명시
+
+# 프로덕션 환경에서는 특정 출처만 허용
+CORS_ALLOW_ALL_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
+
+# 자격 증명(쿠키 등) 허용
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "back.urls"
 
@@ -108,9 +134,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "ko-kr"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
@@ -126,3 +152,19 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+import os
+
+STATIC_URL = '/static/'
+
+# 개발 단계에서는 아래 경로에 정적 파일들을 모아둠
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# 실제 배포 환경에서 정적 파일들을 모을 경로 (지금은 신경쓰지 않아도 됨)
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# 일기에 이미지를 첨부하는 기능에서 파일들을 저장하는 설정
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
