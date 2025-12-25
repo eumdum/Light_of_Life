@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DiaryWrite from '../views/DiaryWrite.vue'
-import DiaryList from '../views/DiaryList.vue'
+import StoreRegister from '../views/StoreRegister.vue'
+import StoreList from '../views/StoreList.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'DiaryWrite',
-    component: DiaryWrite
+    name: 'StoreRegister',
+    component: StoreRegister
   },
   {
     path: '/list',
-    name: 'DiaryList',
-    component: DiaryList
+    name: 'StoreList',
+    component: StoreList
   }
 ]
 

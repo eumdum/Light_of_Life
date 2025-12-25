@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-# from .views import DiaryListCreateView
+# from .views import StoreListCreateView
 from .views import StoreViewSet #, UserRegistrationView
 # from django.contrib import admin
 # from rest_framework_simplejwt.views import (
@@ -10,7 +10,7 @@ from .views import StoreViewSet #, UserRegistrationView
 # from diary.views import UserRegistrationView
 
 # urlpatterns = [
-#     path('diaries/', DiaryListCreateView.as_view(), name='diary-list-create'),
+#     path('stores/', StoreListCreateView.as_view(), name='store-list-create'),
 # ]
 
 # 목적 : api경로 설정

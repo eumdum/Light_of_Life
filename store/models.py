@@ -9,7 +9,7 @@ class Diary(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     emotion = models.CharField(max_length=20, blank=True, null=True)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='diary_entries', null=True)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='store_entries', null=True)
     
     class Meta:
         ordering = ['-date'] # 최신 날짜순으로 정렬
@@ -17,13 +17,19 @@ class Diary(models.Model):
     def __str__(self):
         return f"{self.title} ({self.date})"
 
-# class Diary(models.Model):
-#     content = models.TextField()  # 사용자가 작성한 일기
-#     emotion = models.CharField(max_length=20)  # 감정 분석 결과 (ex. '슬픔')
-#     created_at = models.DateTimeField(auto_now_add=True)  # 생성 시간
+class Store(models.Model):
+    title = models.CharField(max_length=200, default="기본제목")
+    content = models.TextField(default="")
+    date = models.DateField(default=date.today)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    emotion = models.CharField(max_length=20, blank=True, null=True)
+    item = models.CharField(max_length=100, blank=True, null=True)      # 상품명
+    price = models.IntegerField(blank=True, null=True)                  # 가격
+    confidence = models.FloatField(blank=True, null=True)               # 신뢰도
 
-#     def __str__(self):
-#         return f"{self.created_at} - {self.emotion}"
+    def __str__(self):
+        return f"{self.created_at} - {self.emotion} - {self.item}"
 
 # 목적 : 데이터베이스에 저장할 일기 테이블 구조를 정의
 

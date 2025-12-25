@@ -1,4 +1,4 @@
-# diary/emotion.py 에 적용할 최종 권장 방식
+# store/emotion.py 에 적용할 최종 권장 방식
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch

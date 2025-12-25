@@ -24,7 +24,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('diary.urls')),  # '/api/'로 시작하는 모든 요청을 diary.urls로 전달
+    path('api/', include('store.urls')),  # '/api/'로 시작하는 모든 요청을 store.urls로 전달
     # path('', home) # 루트페이지 추가
 ]
 

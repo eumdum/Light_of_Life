@@ -1,12 +1,13 @@
 from rest_framework import viewsets #, permissions, generics
 # from django.contrib.auth.models import User
-from .models import Diary
-from .serializers import DiarySerializer #, UserSerializer
+from .models import Store
+from .serializers import StoreSerializer #, UserSerializer
 from .emotion_analyzer import analyze_emotion
+from .vision_analyzer import analyze_product_image
 
-class DiaryViewSet(viewsets.ModelViewSet):
-    queryset = Diary.objects.all().order_by('-created_at')
-    serializer_class = DiarySerializer
+class StoreViewSet(viewsets.ModelViewSet):
+    queryset = Store.objects.all().order_by('-created_at')
+    serializer_class = StoreSerializer
 #     permission_classes = [permissions.IsAuthenticated]
     
 #     def get_queryset(self):
@@ -19,12 +20,18 @@ class DiaryViewSet(viewsets.ModelViewSet):
         # 사용자가 입력한 '내용'을 가져옴.
         # serializer.validated_data는 유효성검사를 통과한 데이터임.
         content = serializer.validated_data.get('content', '')
+        image = serializer.validated_data.get('image', None)  # 이미지 필드가 있다고 가정
 
         # 감정 분석 실행
         emotion_result = analyze_emotion(content)
+        # 상품 이미지 분석 실행
+        product_result = analyze_product_image(image)
+        item = product_result.get('item')
+        price = product_result.get('price')
+        confidence = product_result.get('confidence')
 
-        # 분석 결과를 'emotion' 필드에 담아서 함께 저장
-        serializer.save(emotion=emotion_result)
+        # 분석 결과를 'emotion', 'item', 'price', 'confidence' 필드에 담아서 함께 저장
+        serializer.save(emotion=emotion_result, item=item, price=price, confidence=confidence)
 
 # class UserRegistrationView(generics.CreateAPIView):
 #     queryset = User.objects.all()

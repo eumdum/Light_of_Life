@@ -1,10 +1,8 @@
 # # konlpy와 감정사전을 이용. 가장 많이 나타나는 감정을 찾는 코드.
-# from konlpy.tag import Okt
-# from .emotion_d import EMOTION_DICT
+# # from .emotion_d import EMOTION_DICT
 
 # def analyze_emotion(text):
-#     okt = Okt()
-#     # 텍스트를 형태소 단위로 나누고, 기본형으로 바꿈 (예: '슬펐어' -> '슬프다')
+#     #     # 텍스트를 형태소 단위로 나누고, 기본형으로 바꿈 (예: '슬펐어' -> '슬프다')
 #     morphs = okt.pos(text, stem=True)
 
 #     emotion_scores = {emotion: 0 for emotion in EMOTION_DICT.keys()}
@@ -28,9 +26,7 @@
 # ---------------------------------------------------------------------------------(아래)
 # import json
 # import os
-# from konlpy.tag import Okt
-
-# # 1단계에서 만든 emotion_dictionary.py 파일에서 부사, 부정어 목록 가져오기
+# # # 1단계에서 만든 emotion_dictionary.py 파일에서 부사, 부정어 목록 가져오기
 # from .emotion_d import BOOSTER_DICT, NEGATION_LIST
 
 # # --- KNU 감성 사전 불러오기 ---
@@ -47,7 +43,7 @@
 #             knu_senti_dict[item['word_root']] = int(item['polarity'])
 # except FileNotFoundError:
 #     # SentiWord_info.json 파일이 없을 경우를 대비한 예외 처리
-#     print("Error: SentiWord_info.json 파일을 back/diary/ 폴더에 넣어주세요.")
+#     print("Error: SentiWord_info.json 파일을 back/store/ 폴더에 넣어주세요.")
 #     knu_senti_dict = {}
 # # --- 사전 불러오기 끝 ---
 
@@ -57,8 +53,7 @@
 #     KNU 감성 사전을 기반으로 문장의 감성을 분석합니다.
 #     부사(booster)와 부정어(negation)를 고려하여 점수를 계산합니다.
 #     """
-#     okt = Okt()
-#     # 문장을 형태소 단위로 나누고, 단어의 원형을 찾음 (예: '슬펐어' -> '슬프다')
+#     #     # 문장을 형태소 단위로 나누고, 단어의 원형을 찾음 (예: '슬펐어' -> '슬프다')
 #     morphs = okt.pos(text, stem=True)
     
 #     total_score = 0
@@ -105,8 +100,7 @@
 #         return "중립"
 # import json
 # import os
-# from konlpy.tag import Okt
-# from .emotion_d import BOOSTER_DICT, NEGATION_LIST, CUSTOM_DICT, REPLACE_DICT
+# # from .emotion_d import BOOSTER_DICT, NEGATION_LIST, CUSTOM_DICT, REPLACE_DICT
 
 # # --- KNU 감성 사전 불러오기 (기존과 동일) ---
 # try:
@@ -119,7 +113,7 @@
 #             knu_senti_dict[item['word_root']] = int(item['polarity'])
 #     knu_senti_dict.update(CUSTOM_DICT) # 두 사전 합짐
 # except FileNotFoundError:
-#     print("Error: SentiWord_info.json 파일을 back/diary/ 폴더에 넣어주세요.")
+#     print("Error: SentiWord_info.json 파일을 back/store/ 폴더에 넣어주세요.")
 #     knu_senti_dict = {}
 
 
@@ -132,8 +126,7 @@
 #         text = text.replace(old_word, new_word)
 
 #     # 바꿔치기한 텍스트로 형태소 분석 시작
-#     okt = Okt()
-#     morphs = okt.pos(text, stem=True)
+#     #     morphs = okt.pos(text, stem=True)
 #     print(f"1. 형태소 분석 결과: {morphs}") # --- 디버깅용 print ---
     
 #     total_score = 0
@@ -241,8 +234,7 @@
 
 # import json
 # import os
-# from konlpy.tag import Okt
-# from .emotion_d import BOOSTER_DICT, NEGATION_LIST, REPLACE_DICT, CUSTOM_SCORE_DICT
+# # from .emotion_d import BOOSTER_DICT, NEGATION_LIST, REPLACE_DICT, CUSTOM_SCORE_DICT
 
 # # --- KNU 사전 불러오기 ---
 # try:
@@ -254,7 +246,7 @@
 #         for item in data:
 #             knu_senti_dict[item['word_root']] = int(item['polarity'])
 # except FileNotFoundError:
-#     print("Error: SentiWord_info.json 파일을 back/diary/ 폴더에 넣어주세요.")
+#     print("Error: SentiWord_info.json 파일을 back/store/ 폴더에 넣어주세요.")
 #     knu_senti_dict = {}
 
 
@@ -273,8 +265,7 @@
 #         text = text.replace(old_word, new_word)
     
 #     # 3. 형태소 분석
-#     okt = Okt()
-#     morphs = okt.pos(text, stem=True)
+#     #     morphs = okt.pos(text, stem=True)
 #     print(f"2. 형태소 분석 결과: {morphs}")
     
 #     total_score = 0
@@ -350,7 +341,6 @@
 #     return result
 import json
 import os
-from konlpy.tag import Okt
 from .emotion_d import BOOSTER_DICT, NEGATION_LIST, REPLACE_DICT, CUSTOM_SCORE_DICT
 
 # --- KNU 사전 불러오기 (기존과 동일) ---
@@ -363,7 +353,7 @@ try:
         for item in data:
             knu_senti_dict[item['word_root']] = int(item['polarity'])
 except FileNotFoundError:
-    print("Error: SentiWord_info.json 파일을 back/diary/ 폴더에 넣어주세요.")
+    print("Error: SentiWord_info.json 파일을 back/store/ 폴더에 넣어주세요.")
     knu_senti_dict = {}
 
 
@@ -375,7 +365,6 @@ def analyze_emotion(text: str) -> str:
         text = text.replace(old_word, new_word)
     
     # 2. 형태소 분석
-    okt = Okt()
     morphs = okt.pos(text, stem=True)
     print(f"2. 형태소 분석 결과: {morphs}")
     

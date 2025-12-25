@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    "diary.apps.DiaryConfig",
+    "store.apps.StoreConfig",
 ]
 
 MIDDLEWARE = [

@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import Diary
+from .models import Store
 # from django.contrib.auth.models import User
 
-class DiarySerializer(serializers.ModelSerializer):
+class StoreSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Diary
-        fields = ['id', 'title', 'content', 'date', 'created_at', 'updated_at', 'emotion']
-        read_only_fields = ['date', 'created_at', 'updated_at', 'emotion']
+        model = Store
+        fields = ['id', 'title', 'content', 'date', 'created_at', 'updated_at', 'emotion', 'item', 'price', 'confidence']
+        read_only_fields = ['date', 'created_at', 'updated_at', 'emotion', 'item', 'price', 'confidence']
 
 # class UserSerializer(serializers.ModelSerializer):
 #     password = serializers.CharField(write_only=True)
