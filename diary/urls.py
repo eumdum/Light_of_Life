@@ -1,45 +1,15 @@
+# 목적 : views.py와 외부주소를 연결하는 역할.
+# 라우터는 a,b 두줄만 사용해서 장고가 자동으로 조회, 생성, 수정, 삭제등과 관련된 코드를 자동으로 짜줌.
+
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-# from .views import DiaryListCreateView
-from .views import DiaryViewSet #, UserRegistrationView
-# from django.contrib import admin
-# from rest_framework_simplejwt.views import (
-#     TokenObtainPairView,
-#     TokenRefreshView,
-# )
-# from diary.views import UserRegistrationView
-
-# urlpatterns = [
-#     path('diaries/', DiaryListCreateView.as_view(), name='diary-list-create'),
-# ]
-
-# 목적 : api경로 설정
+from .views import DiaryViewSet 
 
 # 라우터를 사용하여 /diaries/ 경로를 설정
-router = DefaultRouter()
-router.register(r'diaries', DiaryViewSet) #, basename='diary')
+router = DefaultRouter()                    # a, 자동 주소생성기 가동.
+router.register(r'diaries', DiaryViewSet)   # b, diaries라는 루트주소를 주고, 이 주소에 대한 모든 처리는 DiaryViewSet에게 맡김.
 
 # diary 앱과 관련된 URL만 남겨두고 하나로 합침
 urlpatterns = [
-    path('', include(router.urls)),
-
-    # # 회원가입 URL (/api/register/)
-    # path('register/', UserRegistrationView.as_view(), name='register'), 
-
-    # # JWT 토큰 발급/갱신 URL
-    # path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    # path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-
-    # # DRF 기본 로그인/로그아웃 뷰 (테스트용으로 유용)
-    # path('auth/', include('rest_framework.urls')),
-
+    path('', include(router.urls)),         # back/urls.py에서 /api/를 전달받았고 바로 위 라우터에서 넘겨진 것과 더해 /api/diaries/라는 최종 주소가 완성됨.
 ]
-
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-#     path('api/diary/', include('diary.urls')),
-#     path('api-auth/', include('rest_framework.urls')),
-#     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-#     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-#     path('api/register/', UserRegistrationView.as_view(), name='register'),
-# ]
