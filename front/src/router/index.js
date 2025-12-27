@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import StoreRegister from '../views/StoreRegister.vue'
 import StoreList from '../views/StoreList.vue'
+import Test from '../views/Test.vue' 
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/list',
     name: 'StoreList',
     component: StoreList
+  },
+  { 
+    path: '/test',
+    name: 'Test',
+    component: Test
   }
 ]
 

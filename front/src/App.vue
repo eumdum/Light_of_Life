@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-100">
-    <header class="bg-blue-700 text-white p-4 shadow-md">
+    <header class="bg-[#68ac97] text-white p-4 shadow-md">
       <div class="container mx-auto flex justify-between items-center">
         <!-- <h1 class="text-xl font-bold">감정분석 음악추천 일기</h1> -->
       </div>

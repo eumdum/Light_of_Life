@@ -5,8 +5,8 @@ from .models import Store
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = ['id', 'title', 'content', 'date', 'created_at', 'updated_at', 'emotion', 'item', 'price', 'confidence']
-        read_only_fields = ['date', 'created_at', 'updated_at', 'emotion', 'item', 'price', 'confidence']
+        fields = ['image', 'id', 'title', 'content', 'date', 'created_at', 'updated_at', 'emotion', 'item', 'price', 'confidence']
+        read_only_fields = ['date', 'created_at', 'updated_at', 'emotion']
 
 # class UserSerializer(serializers.ModelSerializer):
 #     password = serializers.CharField(write_only=True)

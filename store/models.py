@@ -27,6 +27,7 @@ class Store(models.Model):
     item = models.CharField(max_length=100, blank=True, null=True)      # 상품명
     price = models.IntegerField(blank=True, null=True)                  # 가격
     confidence = models.FloatField(blank=True, null=True)               # 신뢰도
+    image = models.ImageField(upload_to='uploads/', blank=True, null=True)
 
     def __str__(self):
         return f"{self.created_at} - {self.emotion} - {self.item}"
