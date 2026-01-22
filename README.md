@@ -12,6 +12,3 @@
 뷰부터 하면 됨
 
 -----------------------------------------
-v1
-python manage.py runserver 0.0.0.0:8000 
-npm run dev -- --host 
