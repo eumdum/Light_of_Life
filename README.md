@@ -111,7 +111,7 @@
 * KNU 감성 사전
 * Hugging Face (확장 예정)
 
-### Frontend
+### Front
 
 * Vue.js
 
@@ -177,7 +177,7 @@ cd Light_of_Life
 python -m venv venv
 venv\Scripts\activate
 ```
-### 3. 패기지 설치
+### 3. 패키지 설치
 ```bash
 pip install -r requirements.txt
 ```
