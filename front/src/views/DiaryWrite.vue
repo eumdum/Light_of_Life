@@ -30,22 +30,17 @@
       </form>
     </main>
 
-    <!-- 모달 컴포넌트 -->
     <Modal v-if="isModalVisible" @close="closeModalAndRedirect">
-      <!-- '머리말' 자리에 들어갈 내용을 먼저 정의 -->
       <template #header>
         <span v-if="modalState === 'loading'">분석 중...</span>
         <span v-else>📝 당신의 하루를 분석했어요</span>
       </template>
 
-      <!-- '본문' 자리에 들어갈 내용을 정의 -->
-      <!-- 로딩 상태일 때 보여줄 내용 -->
       <div v-if="modalState === 'loading'" class="loading-content">
         <div class="spinner"></div>
         <p>당신의 하루를 분석하고 있어요{{ loadingDots }}</p>
       </div>
 
-      <!-- 결과 상태일 때 보여줄 내용 -->
       <div v-else class="analysis-content">
         <p>오늘의 감정은 <strong>'{{ analysisResult.emotion }}'</strong>(이)네요.</p>
         <div class="music-recommendation">
@@ -70,17 +65,15 @@ import Modal from '@/components/Modal.vue';
 
 const router = useRouter();
 
-// 현재 브라우저의 주소(hostname)를 사용해서 API 서버의 기본 주소를 동적으로 만듬.
 const API_BASE_URL = `http://${window.location.hostname}:8000`;
 
-// 이제 각 API의 최종 주소는 이 기본 주소를 바탕으로 만들어짐.
 const API_URL = `${API_BASE_URL}/api/diaries/`;
 
 const newDiary = ref({ title: '', content: '' });
 const isSubmitting = ref(false);
 
 const isModalVisible = ref(false);
-const modalState = ref('hidden'); // 'hidden', 'loading', 'result'
+const modalState = ref('hidden');
 const analysisResult = ref({
   emotion: '',
   youtubeLink: ''
@@ -103,7 +96,6 @@ watch(isModalVisible, (newValue) => {
 });
 
 
-// 감정별 음악 추천 키워드 목록 (나중에 더 추가하기.)
 const musicQueryDatabase = {
   "행복": [
     "신나는 노래", "기분 좋아지는 음악 플레이리스트", "행복할 때 듣는 KPOP", 
@@ -118,7 +110,7 @@ const musicQueryDatabase = {
     "화날 때 듣는 힙합", "세상에 소리치고 싶을 때 듣는 노래", "파워풀한 메탈", "분노의 질주 OST"
   ],
   "평온": [
-    "차분한 연주곡", "명상 음악", "ASMR", "새벽 감성 플레이리스트", 
+    "차분한 연주곡", "명상 음악", "새벽 감성 플레이리스트", "유명 클래식 모음",
     "집중할 때 듣는 음악", "Lo-fi hip hop", "자연의 소리", "잠 잘오는 클래식"
   ],
   "중립": [
@@ -126,6 +118,7 @@ const musicQueryDatabase = {
     "팝송 베스트", "인디 음악 추천", "잔잔한 팝송 모음"
   ]
 };
+
 function generateYoutubeLink(emotion) {
   const queries = musicQueryDatabase[emotion] || musicQueryDatabase['중립'];
   const randomQuery = queries[Math.floor(Math.random() * queries.length)];
@@ -162,13 +155,13 @@ async function submitDiary() {
   }
 }
 
-// 모달을 닫고 목록 페이지로 이동하는 함수.
 function closeModalAndRedirect() {
   isModalVisible.value = false;
   modalState.value = 'hidden';
   router.push('/list');
 }
 </script>
+
 
 <style scoped>
 .page-container { 
@@ -263,7 +256,6 @@ function closeModalAndRedirect() {
   transform: translateY(-2px); 
 }
 
-/* 로딩 및 결과 모달 스타일 */
 .loading-content, .analysis-content { 
   padding: 1rem; 
   text-align: center; 
@@ -321,7 +313,6 @@ function closeModalAndRedirect() {
   transform: scale(1.05); 
 }
 
-/* 로딩 스피너 애니메이션 */
 .spinner {
   margin: 0 auto 1.5rem auto;
   width: 50px;

@@ -11,21 +11,25 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-zmh!!s63rnwt_l5f2oil!($)lm9*6u#h$jw17lzrrg=@#=87sv"
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['*'] # 도메인 주소 따면 그걸로 변경!
+# 도메인 주소 따면 수정
+ALLOWED_HOSTS = ['*'] 
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -70,15 +74,14 @@ MIDDLEWARE = [
     
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True  # 또는 CORS_ALLOWED_ORIGINS에 Vue dev URL을 명시
+CORS_ALLOW_ALL_ORIGINS = True 
 
-# 프로덕션 환경에서는 특정 출처만 허용
+
 CORS_ALLOW_ALL_ORIGINS = [
     "http://localhost:8080",
     "http://127.0.0.1:8080",
 ]
 
-# 자격 증명(쿠키 등) 허용
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "back.urls"
@@ -105,10 +108,7 @@ WSGI_APPLICATION = "back.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': env.db()
 }
 
 
@@ -157,12 +157,12 @@ import os
 
 STATIC_URL = '/static/'
 
-# 개발 단계에서는 아래 경로에 정적 파일들을 모아둠
+# 개발단계에서의 정적 파일 모아두는 곳
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# 실제 배포 환경에서 정적 파일들을 모을 경로 (지금은 신경쓰지 않아도 됨)
+# 배포환경에서의 정적 파일 모아두는 곳
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # 일기에 이미지를 첨부하는 기능에서 파일들을 저장하는 설정

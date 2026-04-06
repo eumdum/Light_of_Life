@@ -2,15 +2,18 @@
 venv/
 .venv/
 
+# env
+.env
+
 # 파이썬 캐시 파일
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# 데이터베이스 파일 (개인 데이터이므로 올리지 않음)
-db.sqlite3
+# 데이터베이스 파일
 *.sqlite3
+db.sqlite3
 
 # VS Code 설정 폴더
 .vscode/
