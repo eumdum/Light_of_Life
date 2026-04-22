@@ -1,6 +1,10 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from diary.main import get_diary_music_recommendation
 
 from .models import Diary
 from .serializers import DiarySerializer 
@@ -49,3 +53,18 @@ def analyze_emotion_api(request):
 
     result = analyze_emotion_top2(text)
     return Response(result, status=status.HTTP_200_OK)
+
+
+@csrf_exempt
+def analyze_diary(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        diary_content = data.get('content')
+        
+        # 우리가 성공했던 그 함수 호출!
+        result = get_diary_music_recommendation(diary_content)
+        
+        if result:
+            return JsonResponse(result) # 결과가 이미 JSON 형태라면 바로 반환
+        else:
+            return JsonResponse({"error": "분석 실패"}, status=500)
