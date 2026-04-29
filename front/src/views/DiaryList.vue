@@ -1,26 +1,30 @@
 <template>
   <div class="page-container">
     <header class="app-header">
-      <h1>나의 기록들</h1>
-      <router-link to="/" class="write-button">새 일기 작성하기</router-link>
+      <div class="header-side"></div>
+
+      <h2>🌿 {{ calendarTitle }}일기 목록</h2>
+
+      <div class="header-side">
+        <router-link to="/" class="calendar-view-btn">
+          📅 달력 보기
+        </router-link>
+      </div>
     </header>
 
     <main class="content-wrapper">
       <div v-if="diaries.length > 0" class="diary-list">
-        <article v-for="diary in diaries" :key="diary.id" class="diary-card">
-          <button
-            class="delete-button"
-            @click="openDeleteModal(diary)"
-            aria-label="일기 삭제"
-          >
-            ❌
-          </button>
-
-          <header class="card-header">
-            <h3>{{ diary.title }}</h3>
-            <span class="card-date">{{ formatDate(diary.date) }}</span>
-          </header>
-
+        <article v-for="diary in diaries" :key="diary.id" class="diary-card" @click="openDetailModal(diary)">
+          <div class="card-header">
+            <div class="header-top">
+              <h3>{{ diary.title }}</h3>
+              <button class="card-delete-btn" @click.stop="openDeleteModal(diary)">❌</button>
+            </div>
+            <div class="header-bottom">
+              <span class="card-date">{{ formatDate(diary.date) }}</span>
+              <span v-if="diary.emotion" class="emotion-tag">{{ diary.emotion }}</span>
+            </div>
+          </div>
           <p class="card-content">{{ diary.content }}</p>
         </article>
       </div>
@@ -30,23 +34,48 @@
       </div>
     </main>
 
-    <div v-if="showDeleteModal" class="modal-overlay" @click="closeDeleteModal">
-      <div class="modal-content" @click.stop>
-        <h3>일기를 삭제할까요?</h3>
-        <p>
-          <strong>{{ selectedDiary?.title }}</strong>
-          일기를 삭제하면 다시 복구할 수 없어요.
-        </p>
+    <div v-if="showDetailModal" class="modal-overlay" @click="closeDetailModal">
+      <div class="modal-content detail-modal" @click.stop>
+        <header class="modal-header">
+          <h2>{{ selectedDiary?.title }}</h2>
+          <span class="detail-date">{{ formatDate(selectedDiary?.date) }}</span>
+        </header>
 
+        <div class="modal-body">
+          <section class="diary-text-section">
+            <p class="diary-text">{{ selectedDiary?.content }}</p>
+          </section>
+
+          <section v-if="selectedDiary?.emotion" class="ai-analysis-section">
+            <div class="ai-header">
+              <span class="ai-badge">AI 감정 분석</span>
+              <span class="ai-emotion">오늘의 감정: <strong>{{ selectedDiary.emotion }}</strong></span>
+            </div>
+            <div class="ai-recommendation">
+              <p class="song-title">🎵 추천 곡: {{ selectedDiary.recommendation_song }}</p>
+              <div class="scroll-box">
+                <p class="reason-text">{{ selectedDiary.recommendation_reason }}</p>
+              </div>
+              <a :href="selectedDiary.youtube_url" target="_blank" class="youtube-btn">
+                유튜브에서 감상하기
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <footer class="modal-footer">
+          <button class="close-btn" @click="closeDetailModal">확인</button>
+        </footer>
+      </div>
+    </div>
+
+    <div v-if="showDeleteModal" class="modal-overlay" @click="closeDeleteModal">
+      <div class="modal-content delete-confirm-modal" @click.stop>
+        <h3>일기를 삭제할까요?</h3>
+        <p>삭제한 기록은 되살릴 수 없습니다.</p>
         <div class="modal-actions">
-          <button class="cancel-button" @click="closeDeleteModal">취소</button>
-          <button
-            class="confirm-delete-button"
-            @click="deleteDiary"
-            :disabled="isDeleting"
-          >
-            {{ isDeleting ? '삭제 중...' : '삭제' }}
-          </button>
+          <button class="cancel-btn" @click="closeDeleteModal">취소</button>
+          <button class="confirm-delete-btn" @click="deleteDiary">삭제</button>
         </div>
       </div>
     </div>
@@ -54,73 +83,89 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 
-// 현재 브라우저의 주소(hostname)를 사용해서 API 서버의 기본 주소를 동적으로 만듬.
-const API_BASE_URL = `http://${window.location.hostname}:8000`;
-const API_URL = `${API_BASE_URL}/api/diaries/`;
-
 const diaries = ref([]);
-const showDeleteModal = ref(false);
 const selectedDiary = ref(null);
-const isDeleting = ref(false);
+const showDetailModal = ref(false);
+const showDeleteModal = ref(false);
 
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
-}
+const calendarTitle = computed(() => {
+  const savedId = localStorage.getItem('user_id');
+  const token = localStorage.getItem('access_token');
+  return (token && savedId) ? `${savedId}님의 ` : '';
+});
 
-async function fetchDiaries() {
+const API_URL = `http://${window.location.hostname}:8000/api/diaries/`;
+
+const fetchDiaries = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const token = localStorage.getItem('access_token'); // 열쇠 꺼내기
+    const response = await axios.get('http://localhost:8000/api/diaries/', {
+      headers: {
+        Authorization: `Bearer ${token}` // 열쇠 보여주기
+      }
+    });
     diaries.value = response.data;
   } catch (error) {
-    console.error("일기를 불러오는 데 실패했습니다:", error);
+    console.error("데이터 로드 실패", error);
   }
-}
+};
 
-function openDeleteModal(diary) {
+const formatDate = (dateStr) => {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}.`;
+};
+
+const openDetailModal = (diary) => {
   selectedDiary.value = diary;
-  showDeleteModal.value = true;
-}
+  showDetailModal.value = true;
+};
 
-function closeDeleteModal() {
+const openDeleteModal = (diary) => {
+  selectedDiary.value = diary;
+  showDeleteModal.value = true; // 삭제 전용 상태가 필요할 시 추가 로직
+  showDeleteModal.value = true;
+};
+
+const closeDetailModal = () => {
+  showDetailModal.value = false;
   showDeleteModal.value = false;
   selectedDiary.value = null;
-}
+};
 
-async function deleteDiary() {
-  if (!selectedDiary.value) return;
+const deleteDiary = async () => {
+  // 1. 열쇠(토큰) 꺼내기
+  const token = localStorage.getItem('access_token');
 
   try {
-    isDeleting.value = true;
+    // 2. 삭제 요청 보낼 때 헤더에 토큰 꼭 넣어주기!
+    await axios.delete(`${API_URL}${selectedDiary.value.id}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
 
-    await axios.delete(`${API_URL}${selectedDiary.value.id}/`);
-
-    diaries.value = diaries.value.filter(
-      (diary) => diary.id !== selectedDiary.value.id
-    );
-
-    closeDeleteModal();
+    // 3. 삭제 성공하면 목록 새로고침하고 모달 닫기
+    await fetchDiaries();
+    closeDetailModal();
+    alert("일기가 삭제되었습니다.");
   } catch (error) {
-    console.error('일기 삭제에 실패했습니다:', error);
-    alert('일기 삭제에 실패했습니다.');
-  } finally {
-    isDeleting.value = false;
+    console.error("삭제 실패:", error.response?.data || error);
+    alert("삭제 중 오류가 발생했습니다.");
   }
-}
+};
 
-onMounted(() => {
-  fetchDiaries();
-});
+onMounted(fetchDiaries);
 </script>
 
 <style scoped>
 .page-container {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 .app-header {
@@ -128,179 +173,308 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  padding: 0 1rem;
 }
 
 .app-header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #ffffff
+  color: #fff;
+  font-size: 2.2rem;
 }
 
 .write-button {
-  padding: 0.8rem 1.5rem;
-  border: none;
+  background: #869a69;
+  color: white;
+  padding: 0.7rem 1.5rem;
   border-radius: 8px;
-  background-color: var(--primary-color, #869a69);
-  color: var(--text-light, #fff);
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
   text-decoration: none;
-  transition: all 0.2s;
+  font-weight: bold;
 }
 
-.write-button:hover {
-  background-color: #708255;
-  transform: translateY(-2px);
-}
-
+/* 리스트 그리드 */
 .diary-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
+/* 다이어리 카드 */
 .diary-card {
-  position: relative;
-  background-color: var(--bg-light, #fff);
-  border: 1px solid var(--border-color, #e0e0e0);
+  background: white;
+  border-radius: 15px;
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  height: 220px;
 }
 
 .diary-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-}
-
-.delete-button {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 0.95rem;
-  line-height: 1;
-  padding: 0.2rem;
-  transition: transform 0.2s ease;
-}
-
-.delete-button:hover {
-  transform: scale(1.1);
 }
 
 .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
   border-bottom: 1px solid #eee;
   padding-bottom: 0.8rem;
-  padding-right: 1.8rem;
+  margin-bottom: 1rem;
 }
 
-.card-header h3 {
-  font-size: 1.3rem;
-  font-weight: 600;
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-top h3 {
+  margin: 0;
+  font-size: 1.2rem;
   color: #333;
 }
 
+.card-delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.header-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
 .card-date {
+  color: #888;
   font-size: 0.85rem;
-  color: #777;
+}
+
+.emotion-tag {
+  background: #f0f4e8;
+  color: #869a69;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
 }
 
 .card-content {
-  font-size: 1rem;
-  line-height: 1.6;
   color: #555;
-  white-space: pre-wrap;
-  max-height: 150px;
-  overflow-y: auto;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  margin: 0;
 }
 
-.empty-list-message {
-  text-align: center;
-  padding: 4rem;
-  background-color: var(--bg-light, #fff);
-  border-radius: 12px;
-  color: #888;
-  font-size: 1.2rem;
-}
-
+/* 모달 레이아웃 */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 1000;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
 }
 
 .modal-content {
-  width: 90%;
-  max-width: 420px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 1.8rem;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  background: white;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 550px;
+  padding: 2rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  border-bottom: 2px solid #f0f4e8;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.detail-date {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.diary-text-section {
+  margin-bottom: 2rem;
+}
+
+.diary-text {
+  line-height: 1.8;
+  color: #444;
+  white-space: pre-wrap;
+}
+
+/* AI 결과 스타일 */
+.ai-analysis-section {
+  background: #f7f8f6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 5px solid #869a69;
+}
+
+.ai-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ai-badge {
+  background: #869a69;
+  color: white;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.ai-emotion {
+  color: #333;
+  font-size: 1rem;
+}
+
+.ai-recommendation .song-title {
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 0.8rem;
+}
+
+.scroll-box {
+  max-height: 150px;
+  overflow-y: auto;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #eee;
+  margin-bottom: 1rem;
+}
+
+.reason-text {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.youtube-btn {
+  display: block;
+  background: #FF0000;
+  color: white;
+  text-align: center;
+  padding: 0.8rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.modal-footer {
+  margin-top: 2rem;
   text-align: center;
 }
 
-.modal-content h3 {
-  margin-bottom: 0.8rem;
-  font-size: 1.3rem;
-  color: #222;
+.close-btn {
+  background: #869a69;
+  color: white;
+  border: none;
+  padding: 0.8rem 2.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.modal-content p {
-  color: #555;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+/* 삭제 확인 모달 전용 */
+.delete-confirm-modal {
+  max-width: 350px;
+  text-align: center;
 }
 
 .modal-actions {
   display: flex;
+  gap: 1rem;
   justify-content: center;
-  gap: 0.8rem;
+  margin-top: 1.5rem;
 }
 
-.cancel-button,
-.confirm-delete-button {
-  min-width: 100px;
-  padding: 0.75rem 1rem;
+.cancel-btn {
+  background: #eee;
   border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.cancel-button {
-  background: #e9ecef;
-  color: #333;
-}
-
-.cancel-button:hover {
-  background: #dde2e6;
-}
-
-.confirm-delete-button {
+.confirm-delete-btn {
   background: #d9534f;
   color: white;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.confirm-delete-button:hover {
-  background: #c9302c;
+/* 스크롤바 디자인 */
+.scroll-box::-webkit-scrollbar {
+  width: 5px;
 }
 
-.confirm-delete-button:disabled {
-  background: #e3a3a1;
-  cursor: not-allowed;
+.scroll-box::-webkit-scrollbar-thumb {
+  background: #869a69;
+  border-radius: 10px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
+}
+
+.header-side {
+  flex: 1;
+  /* 양옆 공간을 똑같이 차지하게 함 */
+  display: flex;
+  justify-content: flex-end;
+  /* 버튼을 오른쪽 끝으로 */
+}
+
+h2 {
+  flex: 2;
+  /* 제목이 중앙에 오도록 넓게 잡음 */
+  text-align: center;
+  margin: 0;
+  color: #556b2f;
+}
+
+.calendar-view-btn {
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #869a69;
+  background-color: white;
+  padding: 8px 16px;
+  border: 1px solid #869a69;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.calendar-view-btn:hover {
+  background-color: #869a69;
+  color: white;
 }
 </style>

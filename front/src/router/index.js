@@ -1,10 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DiaryWrite from '../views/DiaryWrite.vue'
 import DiaryList from '../views/DiaryList.vue'
+import Login from '@/views/Login.vue'
+import Singup from '@/views/Singup.vue'
+import DiaryCalendar from '@/views/DiaryCalendar.vue'
 
 const routes = [
   {
-    path: '/',
+    path: '/write',
     name: 'DiaryWrite',
     component: DiaryWrite
   },
@@ -12,12 +15,44 @@ const routes = [
     path: '/list',
     name: 'DiaryList',
     component: DiaryList
-  }
-]
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: Singup
+  },
+  {
+    path: '/',
+    name: 'calendar',
+    component: DiaryCalendar
+  },
+];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes
-})
+  history: createWebHistory(),
+  routes,
+});
 
-export default router
+// [추가] 페이지 이동 전 로그인 체크
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = !!localStorage.getItem('access_token');
+
+  if (to.path === '/') {
+    next();
+  }
+  
+  // 로그인이 필요한 페이지인데 로그인을 안 했다면?
+  else if (to.path !== '/login' && to.path !== '/signup' && !isLoggedIn) {
+    alert('로그인이 필요한 서비스입니다.');
+    next('/login'); // 로그인 페이지로 튕겨내기
+  } else {
+    next(); // 통과
+  }
+});
+
+export default router;

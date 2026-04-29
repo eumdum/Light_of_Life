@@ -16,11 +16,11 @@
           </slot>
         </main>
 
-        <footer class="modal-footer">
+        <!-- <footer class="modal-footer">
           <button @click="$emit('close')" class="modal-close-button">
             확인
           </button>
-        </footer>
+        </footer> -->
       </div>
     </div>
   </transition>
