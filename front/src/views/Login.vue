@@ -1,51 +1,52 @@
 <template>
-    <div class="auth-container">
-      <h2>로그인</h2>
-      <form @submit.prevent="login">
-        <input v-model="username" placeholder="아이디" required />
-        <input v-model="password" type="password" placeholder="비밀번호" required />
-        <button type="submit">로그인</button>
-      </form>
-      <div class="auth-footer">
-        <router-link to="/signup" class="link-text">
-          아직 회원이 아니신가요? <strong>회원가입 하러가기</strong>
-        </router-link>
-      </div>
+  <div class="auth-container">
+    <h2>로그인</h2>
+    <form @submit.prevent="login">
+      <input v-model="username" placeholder="아이디" required />
+      <input v-model="password" type="password" placeholder="비밀번호" required />
+      <button type="submit">로그인</button>
+    </form>
+    <div class="auth-footer">
+      <router-link to="/signup" class="link-text">
+        아직 회원이 아니신가요? <strong>회원가입 하러가기</strong>
+      </router-link>
     </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue';
-  import axios from 'axios';
-  import { useRouter } from 'vue-router';
-  
-  const username = ref('');
-  const password = ref('');
-  const router = useRouter();
-  
-  const login = async () => {
-    try {
-      const res = await axios.post('http://localhost:8000/api/token/', {
-        username: username.value,
-        password: password.value
-      });
-      localStorage.setItem('access_token', res.data.access); // 열쇠 저장
-      localStorage.setItem('user_id', username.value);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access}`;
-      router.push('/');
-    } catch (e) {
-      console.error(e);
-      alert('로그인 실패!');
-    }
-  };
-  </script>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const username = ref('');
+const password = ref('');
+const router = useRouter();
+
+const login = async () => {
+  try {
+    const res = await axios.post(`${API_BASE_URL}token/`, {
+      username: username.value,
+      password: password.value
+    });
+    localStorage.setItem('access_token', res.data.access);
+    localStorage.setItem('user_id', username.value);
+    axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.access}`;
+    router.push('/');
+  } catch (e) {
+    console.error(e);
+    alert('로그인 실패!');
+  }
+};
+</script>
 
 <style scoped>
 .auth-container {
   max-width: 400px;
   margin: 80px auto;
   padding: 40px;
-  background-color: #f9f7e8; /* 헤더와 같은 크림색 */
+  background-color: #f9f7e8;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -97,7 +98,7 @@ button:hover {
   text-decoration: underline;
 }
 
-/* 하단 링크를 위한 스타일 추가 */
+
 .auth-footer {
   margin-top: 25px;
   padding-top: 20px;
@@ -106,7 +107,7 @@ button:hover {
 
 .link-text {
   text-decoration: none;
-  color: #6d7e56; /* 배경색보다 조금 진한 녹색 */
+  color: #6d7e56;
   font-size: 0.9rem;
   font-weight: 500;
   transition: all 0.3s ease;
@@ -117,7 +118,6 @@ button:hover {
   font-weight: 700;
 }
 
-/* 만약 버튼처럼 만들고 싶다면 이걸 쓰면 돼 */
 .btn-secondary {
   display: inline-block;
   margin-top: 15px;

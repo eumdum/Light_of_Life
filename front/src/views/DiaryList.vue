@@ -86,6 +86,7 @@
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const diaries = ref([]);
 const selectedDiary = ref(null);
 const showDetailModal = ref(false);
@@ -97,14 +98,13 @@ const calendarTitle = computed(() => {
   return (token && savedId) ? `${savedId}님의 ` : '';
 });
 
-const API_URL = `http://${window.location.hostname}:8000/api/diaries/`;
-
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}diaries/`;
 const fetchDiaries = async () => {
   try {
-    const token = localStorage.getItem('access_token'); // 열쇠 꺼내기
-    const response = await axios.get('http://localhost:8000/api/diaries/', {
+    const token = localStorage.getItem('access_token'); 
+    const response = await axios.get(`${API_BASE_URL}diaries/`, {
       headers: {
-        Authorization: `Bearer ${token}` // 열쇠 보여주기
+        Authorization: `Bearer ${token}` 
       }
     });
     diaries.value = response.data;
@@ -126,7 +126,7 @@ const openDetailModal = (diary) => {
 
 const openDeleteModal = (diary) => {
   selectedDiary.value = diary;
-  showDeleteModal.value = true; // 삭제 전용 상태가 필요할 시 추가 로직
+  showDeleteModal.value = true;
   showDeleteModal.value = true;
 };
 
@@ -137,18 +137,15 @@ const closeDetailModal = () => {
 };
 
 const deleteDiary = async () => {
-  // 1. 열쇠(토큰) 꺼내기
   const token = localStorage.getItem('access_token');
 
   try {
-    // 2. 삭제 요청 보낼 때 헤더에 토큰 꼭 넣어주기!
     await axios.delete(`${API_URL}${selectedDiary.value.id}/`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
-    // 3. 삭제 성공하면 목록 새로고침하고 모달 닫기
     await fetchDiaries();
     closeDetailModal();
     alert("일기가 삭제되었습니다.");
@@ -189,14 +186,12 @@ onMounted(fetchDiaries);
   font-weight: bold;
 }
 
-/* 리스트 그리드 */
 .diary-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-/* 다이어리 카드 */
 .diary-card {
   background: white;
   border-radius: 15px;
@@ -269,7 +264,6 @@ onMounted(fetchDiaries);
   margin: 0;
 }
 
-/* 모달 레이아웃 */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -318,7 +312,6 @@ onMounted(fetchDiaries);
   white-space: pre-wrap;
 }
 
-/* AI 결과 스타일 */
 .ai-analysis-section {
   background: #f7f8f6;
   border-radius: 12px;
@@ -397,7 +390,6 @@ onMounted(fetchDiaries);
   font-weight: bold;
 }
 
-/* 삭제 확인 모달 전용 */
 .delete-confirm-modal {
   max-width: 350px;
   text-align: center;
@@ -427,7 +419,6 @@ onMounted(fetchDiaries);
   cursor: pointer;
 }
 
-/* 스크롤바 디자인 */
 .scroll-box::-webkit-scrollbar {
   width: 5px;
 }
@@ -447,15 +438,12 @@ onMounted(fetchDiaries);
 
 .header-side {
   flex: 1;
-  /* 양옆 공간을 똑같이 차지하게 함 */
   display: flex;
   justify-content: flex-end;
-  /* 버튼을 오른쪽 끝으로 */
 }
 
 h2 {
   flex: 2;
-  /* 제목이 중앙에 오도록 넓게 잡음 */
   text-align: center;
   margin: 0;
   color: #556b2f;

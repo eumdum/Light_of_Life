@@ -33,7 +33,6 @@ const updateAuthStatus = () => {
   const token = localStorage.getItem('access_token');
   isLoggedIn.value = !!token;
   
-  // [추가] 로그인 상태라면 저장된 ID 꺼내오기
   if (isLoggedIn.value) {
     userId.value = localStorage.getItem('user_id') || '사용자';
   }
@@ -48,19 +47,18 @@ const logout = () => {
 };
 
 onMounted(updateAuthStatus);
-watch(() => route.path, updateAuthStatus); // 주소 바뀔 때마다 체크
+watch(() => route.path, updateAuthStatus); 
 </script>
 
 <style>
-/* 전역 배경색 설정 */
 body {
   margin: 0;
-  background-color: #a8b69a; /* 은정이가 고른 배경색 */
+  background-color: #a8b69a;
   font-family: 'Pretendard', sans-serif;
 }
 
 .header-nav {
-  background-color: #f9f7e8; /* 은정이가 고른 1번 헤더색 */
+  background-color: #f9f7e8; 
   height: 60px;
   display: flex;
   align-items: center;
@@ -117,12 +115,12 @@ body {
 
 .user-name {
   font-size: 0.9rem;
-  color: #556b2f; /* 우리 포인트 컬러인 짙은 녹색 */
+  color: #556b2f; 
   margin-right: 10px;
 }
 
 .user-name strong {
   font-weight: 700;
-  text-decoration: underline; /* ID 강조하고 싶으면 추가 */
+  text-decoration: underline; 
 }
 </style>

@@ -13,38 +13,36 @@ class DiarySerializer(serializers.ModelSerializer):
             'updated_at', 
             'emotion',
 
-            # top1, top2, 전체감정
-            # "emotion_label",
-            # "emotion_score",
-            # "sub_emotion_label",
-            # "sub_emotion_score",
-            # "emotion_raw",
+            "emotion_label",
+            "emotion_score",
+            "sub_emotion_label",
+            "sub_emotion_score",
+            "emotion_raw",
 
-            # # [다음 단계 LLM용]
-            # "keywords",
-            # "emotion_summary",
+            "keywords",
+            "emotion_summary",
             "recommendation_song",
             "recommendation_reason",
             "youtube_url",
-            ]
+        ]
 
         read_only_fields = [
             'date', 
             'created_at', 
             'updated_at', 
             'emotion',
-            # "emotion_label",
-            # "emotion_score",
-            # "sub_emotion_label",
-            # "sub_emotion_score",
-            # "emotion_raw",
-            # "keywords",
-            # "emotion_summary",
+            "emotion_label",
+            "emotion_score",
+            "sub_emotion_label",
+            "sub_emotion_score",
+            "emotion_raw",
+            "keywords",
+            "emotion_summary",
             "recommendation_song",
             "recommendation_reason",
             "youtube_url",
             
-            ]
+        ]
 
         fields = '__all__'
         read_only_fields = ('author',)

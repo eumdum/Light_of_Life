@@ -38,7 +38,7 @@ const router = createRouter({
   routes,
 });
 
-// [추가] 페이지 이동 전 로그인 체크
+// 페이지 이동 전 로그인 체크
 router.beforeEach((to, from, next) => {
   const isLoggedIn = !!localStorage.getItem('access_token');
 
@@ -46,12 +46,12 @@ router.beforeEach((to, from, next) => {
     next();
   }
   
-  // 로그인이 필요한 페이지인데 로그인을 안 했다면?
+  // 로그인이 필요한 페이지인데 로그인을 안 했을떄
   else if (to.path !== '/login' && to.path !== '/signup' && !isLoggedIn) {
     alert('로그인이 필요한 서비스입니다.');
-    next('/login'); // 로그인 페이지로 튕겨내기
+    next('/login');
   } else {
-    next(); // 통과
+    next();
   }
 });
 
