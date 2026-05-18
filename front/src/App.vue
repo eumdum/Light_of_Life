@@ -1,27 +1,25 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
-    <header class="bg-blue-700 text-white p-4 shadow-md">
-      <div class="container mx-auto flex justify-between items-center">
+  <div id="app">
+    <nav class="header-nav">
+      <div class="nav-content">
+        <router-link to="/" class="logo">🌿 마음일기</router-link>
+        
+        <div class="auth-menu">
+          <template v-if="isLoggedIn">
+            <span class="user-name"><strong>{{ userId }}</strong>님! 반가워요!</span>
+            <button @click="logout" class="auth-btn logout">로그아웃</button>
+          </template>
+          <template v-else>
+            <router-link to="/login" class="auth-btn">로그인</router-link>
+            <router-link to="/signup" class="auth-btn signup">회원가입</router-link>
+          </template>
+        </div>
       </div>
-    </header>
-    
-    <main>
-      <router-view />
-    </main>
-    
-    <footer class="bg-gray-800 text-white p-4 mt-8">
-      <div class="container mx-auto text-center">
-      </div>
-    </footer>
+    </nav>
+    <router-view />
   </div>
 </template>
 
-<<<<<<< Updated upstream
-<script>
-export default {
-  name: 'App'
-}
-=======
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
@@ -50,22 +48,11 @@ const logout = () => {
 
 onMounted(updateAuthStatus);
 watch(() => route.path, updateAuthStatus); 
->>>>>>> Stashed changes
 </script>
 
 <style>
 body {
-  background-color: #a8b69a; 
-  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
   margin: 0;
-<<<<<<< Updated upstream
-  color: #333;
-}
-
-#app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-=======
   background-color: #a8b69a; 
   font-family: 'Pretendard', sans-serif;
 }
@@ -76,19 +63,17 @@ body {
   display: flex;
   align-items: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
->>>>>>> Stashed changes
 }
 
-:root {
-  --primary-color: #869a69;
-  --text-dark: #333;
-  --text-light: #f5f5f5;
-  --bg-light: #ffffff;
-  --border-color: #e5e7eb;
+.nav-content {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-<<<<<<< Updated upstream
-</style>
-=======
 
 .logo {
   font-size: 1.2rem;
@@ -139,4 +124,3 @@ body {
   text-decoration: underline; 
 }
 </style>
->>>>>>> Stashed changes

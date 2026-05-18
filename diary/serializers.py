@@ -12,23 +12,9 @@ class DiarySerializer(serializers.ModelSerializer):
             'created_at', 
             'updated_at', 
             'emotion',
-<<<<<<< Updated upstream
-
-            # top1, top2, 전체감정
-            "emotion_label",
-            "emotion_score",
-            "sub_emotion_label",
-            "sub_emotion_score",
-            "emotion_raw",
-
-            # [다음 단계 LLM용]
-            "keywords",
-            "emotion_summary",
-=======
             "recommendation_song",
->>>>>>> Stashed changes
             "recommendation_reason",
-            "music_query",
+            "youtube_url",
             ]
 
         read_only_fields = [
@@ -36,20 +22,10 @@ class DiarySerializer(serializers.ModelSerializer):
             'created_at', 
             'updated_at', 
             'emotion',
-<<<<<<< Updated upstream
-            "emotion_label",
-            "emotion_score",
-            "sub_emotion_label",
-            "sub_emotion_score",
-            "emotion_raw",
-            "keywords",
-            "emotion_summary",
-            "recommendation_reason",
-            "music_query",
-            
-=======
             "recommendation_song",
             "recommendation_reason",
             "youtube_url",
->>>>>>> Stashed changes
             ]
+
+        fields = '__all__'
+        read_only_fields = ('author',)

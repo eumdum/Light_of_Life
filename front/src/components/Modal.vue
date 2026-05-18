@@ -13,15 +13,6 @@
             모달 내용입니다.
           </slot>
         </main>
-<<<<<<< Updated upstream
-
-        <footer class="modal-footer">
-          <button @click="$emit('close')" class="modal-close-button">
-            확인
-          </button>
-        </footer>
-=======
->>>>>>> Stashed changes
       </div>
     </div>
   </transition>

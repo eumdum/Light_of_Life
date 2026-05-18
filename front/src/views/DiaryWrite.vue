@@ -27,22 +27,10 @@
 
       <div v-if="modalState === 'loading'" class="loading-content">
         <div class="spinner"></div>
-        <p>당신의 하루를 분석하고 있어요{{ loadingDots }}</p>
+        <p>{{ loadingMessages[currentMessageIndex] }}{{ loadingDots }}</p>
       </div>
 
       <div v-else class="analysis-content">
-<<<<<<< Updated upstream
-        <p>오늘의 감정은 <strong>'{{ analysisResult.emotion }}'</strong>(이)네요.</p>
-        <div class="music-recommendation">
-          <h4>이런 음악은 어때요?</h4>
-          <p class="recommendation-text">
-            아래 링크를 눌러 오늘의 감정에 맞는 음악을 들어보세요!
-          </p>
-          <a :href="analysisResult.youtubeLink" target="_blank" rel="noopener noreferrer" class="youtube-link-button">
-            🎵 유튜브에서 음악 듣기
-          </a>
-        </div>
-=======
         <div v-if="recommendation && recommendation.recommendation_song">
           <p>지금 마음은 <strong>'{{ recommendation.emotion }}'</strong> 인 것 같네요!</p>
           <p>오늘의 추천 곡: <strong>{{ recommendation.recommendation_song }}</strong></p>
@@ -65,21 +53,16 @@
         </div>
 
         <button @click="closeModalAndRedirect" class="modal-close-button">확인</button>
->>>>>>> Stashed changes
       </div>
     </Modal>
   </div>
 </template>
 
-<script setup>
-import { ref, watch } from 'vue';
+
+<script>
 import axios from 'axios';
-import { useRouter } from 'vue-router';
 import Modal from '@/components/Modal.vue';
 
-<<<<<<< Updated upstream
-const router = useRouter();
-=======
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export default {
@@ -107,39 +90,14 @@ export default {
       messageInterval: null,
     };
   },
->>>>>>> Stashed changes
 
-const API_BASE_URL = `http://${window.location.hostname}:8000`;
+  methods: {
+    async submitDiary() {
+      if (!this.newDiary.title || !this.newDiary.content) {
+        alert("제목과 내용을 모두 입력해주세요.");
+        return;
+      }
 
-<<<<<<< Updated upstream
-const API_URL = `${API_BASE_URL}/api/diaries/`;
-
-const newDiary = ref({ title: '', content: '' });
-const isSubmitting = ref(false);
-
-const isModalVisible = ref(false);
-const modalState = ref('hidden');
-const analysisResult = ref({
-  emotion: '',
-  youtubeLink: ''
-});
-
-const loadingDots = ref('.');
-let dotInterval = null;
-
-watch(isModalVisible, (newValue) => {
-  if (newValue && modalState.value === 'loading') {
-    dotInterval = setInterval(() => {
-      loadingDots.value = loadingDots.value.length < 3 ? loadingDots.value + '.' : '.';
-    }, 500);
-  } else {
-    if (dotInterval) {
-      clearInterval(dotInterval);
-      dotInterval = null;
-    }
-  }
-});
-=======
       this.isSubmitting = true;
       this.recommendation = null;
       this.showLoadingModal();
@@ -188,89 +146,43 @@ watch(isModalVisible, (newValue) => {
       this.currentMessageIndex = 0;
       this.loadingDots = '';
       this.startLoadingDots();
->>>>>>> Stashed changes
 
+      this.messageInterval = setInterval(() => {
+        if (this.currentMessageIndex < this.loadingMessages.length - 1) {
+          this.currentMessageIndex++;
+        } else {
+          clearInterval(this.messageInterval);
+        }
+      }, 4000);
+    },
 
-const musicQueryDatabase = {
-  "행복": [
-    "신나는 노래", "기분 좋아지는 음악 플레이리스트", "행복할 때 듣는 KPOP", 
-    "밝은 팝송", "듣기만 해도 설레는 노래", "축하 파티 음악", "성공 축하 노래"
-  ],
-  "슬픔": [
-    "위로가 되는 노래", "슬픈 발라드 추천", "혼자 듣기 좋은 잔잔한 음악", 
-    "비 오는 날 듣는 노래", "이별 노래 모음", "감성적인 영화 OST", "새벽에 듣기 좋은 노래"
-  ],
-  "분노": [
-    "스트레스 해소 음악", "신나는 락 음악", "운동할 때 듣는 EDM", 
-    "화날 때 듣는 힙합", "세상에 소리치고 싶을 때 듣는 노래", "파워풀한 메탈", "분노의 질주 OST"
-  ],
-  "평온": [
-    "차분한 연주곡", "명상 음악", "새벽 감성 플레이리스트", "유명 클래식 모음",
-    "집중할 때 듣는 음악", "Lo-fi hip hop", "자연의 소리", "잠 잘오는 클래식"
-  ],
-  "중립": [
-    "요즘 인기있는 노래", "드라이브 플레이리스트", "카페에서 듣기 좋은 노래", 
-    "팝송 베스트", "인디 음악 추천", "잔잔한 팝송 모음"
-  ]
+    startLoadingDots() {
+      if (this.loadingInterval) clearInterval(this.loadingInterval);
+      this.loadingInterval = setInterval(() => {
+        this.loadingDots = this.loadingDots.length >= 3 ? '' : this.loadingDots + '.';
+      }, 500);
+    },
+
+    stopLoadingDots() {
+      clearInterval(this.loadingInterval);
+      clearInterval(this.messageInterval);
+    },
+
+    closeModalAndRedirect() {
+      this.isModalVisible = false;
+      this.recommendation = null;
+      this.$router.push('/list');
+    },
+  },
 };
-
-function generateYoutubeLink(emotion) {
-  const queries = musicQueryDatabase[emotion] || musicQueryDatabase['중립'];
-  const randomQuery = queries[Math.floor(Math.random() * queries.length)];
-  const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(randomQuery)}`;
-  return youtubeSearchUrl;
-}
-
-<<<<<<< Updated upstream
-async function submitDiary() {
-  if (!newDiary.value.title || !newDiary.value.content) {
-    alert("제목과 내용을 모두 입력해주세요.");
-    return;
-  }
-  isSubmitting.value = true;
-
-  modalState.value = 'loading';
-  isModalVisible.value = true;
-
-  try {
-    const response = await axios.post(API_URL, newDiary.value);
-    const savedDiary = response.data;
-
-    analysisResult.value.emotion = savedDiary.emotion || '중립';
-    analysisResult.value.youtubeLink = generateYoutubeLink(analysisResult.value.emotion);
-    
-    modalState.value = 'result';
-
-  } catch (error) {
-    console.error("일기 저장에 실패했습니다:", error);
-    isModalVisible.value = false;
-    modalState.value = 'hidden';
-    alert("저장에 실패했습니다. 다시 시도해주세요.");
-  } finally {
-    isSubmitting.value = false;
-  }
-}
-
-function closeModalAndRedirect() {
-  isModalVisible.value = false;
-  modalState.value = 'hidden';
-  router.push('/list');
-}
 </script>
 
 
-<style scoped>
-.page-container { 
-  max-width: 700px; 
-  margin: 2rem auto; 
-  padding: 1rem; 
-=======
 <style scoped>
 .page-container {
   max-width: 700px;
   margin: 2rem auto;
   padding: 1rem;
->>>>>>> Stashed changes
 }
 
 .app-header {
@@ -383,43 +295,6 @@ function closeModalAndRedirect() {
   font-size: 1.1em;
 }
 
-<<<<<<< Updated upstream
-.music-recommendation { 
-  background-color: #f7f8f6; 
-  padding: 1.5rem; 
-  border-radius: 8px; 
-  border-left: 4px solid var(--primary-color, #869a69); 
-  text-align: center; 
-}
-
-.music-recommendation h4 { 
-  margin: 0 0 0.5rem 0; 
-  font-size: 1rem; 
-  color: #555; 
-}
-
-.recommendation-text { 
-  font-size: 1rem; 
-  color: #666; 
-  margin-bottom: 1rem !important; 
-}
-
-.youtube-link-button { 
-  display: inline-block; 
-  padding: 0.8rem 2rem; 
-  border-radius: 8px; 
-  background-color: #FF0000; 
-  color: white; 
-  font-size: 1.1rem; 
-  font-weight: 600; 
-  text-decoration: none; 
-  transition: all 0.2s; 
-}
-
-.youtube-link-button:hover { 
-  background-color: #cc0000; 
-  transform: scale(1.05); 
-=======
 .music-recommendation {
   background-color: #f7f8f6;
   padding: 1.5rem;
@@ -481,7 +356,6 @@ function closeModalAndRedirect() {
 .youtube-link-button:hover {
   background-color: #cc0000;
   transform: scale(1.02);
->>>>>>> Stashed changes
 }
 
 .spinner {
@@ -493,6 +367,7 @@ function closeModalAndRedirect() {
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -502,8 +377,6 @@ function closeModalAndRedirect() {
     transform: rotate(360deg);
   }
 }
-<<<<<<< Updated upstream
-=======
 
 .modal-close-button {
   margin-top: 10px;
@@ -519,5 +392,4 @@ function closeModalAndRedirect() {
 .modal-close-button:hover {
   background-color: #708255;
 }
->>>>>>> Stashed changes
 </style>
