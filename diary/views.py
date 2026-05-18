@@ -1,7 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from .models import Diary
 from .serializers import DiarySerializer
@@ -9,11 +9,11 @@ from diary.main import get_diary_music_recommendation
 
 class DiaryViewSet(viewsets.ModelViewSet):
     serializer_class = DiarySerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Diary.objects.all().order_by("-created_at")
-        
+        return Diary.objects.filter(author=self.request.user).order_by("-created_at")
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
