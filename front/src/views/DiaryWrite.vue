@@ -7,20 +7,9 @@
 
     <main class="content-wrapper">
       <form @submit.prevent="submitDiary" class="diary-form">
-        <input
-          v-model="newDiary.title"
-          type="text"
-          placeholder="제목"
-          class="form-input"
-          required
-        />
-        <textarea
-          v-model="newDiary.content"
-          placeholder="어떤 하루를 보냈나요?"
-          class="form-textarea"
-          rows="8"
-          required
-        ></textarea>
+        <input v-model="newDiary.title" type="text" placeholder="제목" class="form-input" required />
+        <textarea v-model="newDiary.content" placeholder="어떤 하루를 보냈나요?" class="form-textarea" rows="8"
+          required></textarea>
         <div class="button-group">
           <button type="submit" class="submit-button" :disabled="isSubmitting">
             일기 저장하기
@@ -42,6 +31,7 @@
       </div>
 
       <div v-else class="analysis-content">
+<<<<<<< Updated upstream
         <p>오늘의 감정은 <strong>'{{ analysisResult.emotion }}'</strong>(이)네요.</p>
         <div class="music-recommendation">
           <h4>이런 음악은 어때요?</h4>
@@ -52,6 +42,30 @@
             🎵 유튜브에서 음악 듣기
           </a>
         </div>
+=======
+        <div v-if="recommendation && recommendation.recommendation_song">
+          <p>지금 마음은 <strong>'{{ recommendation.emotion }}'</strong> 인 것 같네요!</p>
+          <p>오늘의 추천 곡: <strong>{{ recommendation.recommendation_song }}</strong></p>
+
+          <div class="music-recommendation">
+            <h4>추천 이유 및 감정 분석</h4>
+
+            <div class="scroll-box">
+              <p class="recommendation-text">{{ recommendation.recommendation_reason }}</p>
+            </div>
+
+            <a :href="recommendation.youtube_url" target="_blank" rel="noopener noreferrer" class="youtube-link-button">
+              🎵 유튜브에서 노래 듣기 🎵
+            </a>
+          </div>
+        </div>
+
+        <div v-else>
+          <p>일기가 안전하게 저장되었습니다!</p>
+        </div>
+
+        <button @click="closeModalAndRedirect" class="modal-close-button">확인</button>
+>>>>>>> Stashed changes
       </div>
     </Modal>
   </div>
@@ -63,10 +77,41 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 import Modal from '@/components/Modal.vue';
 
+<<<<<<< Updated upstream
 const router = useRouter();
+=======
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export default {
+  components: { Modal },
+  data() {
+    return {
+      newDiary: {
+        title: '',
+        content: '',
+      },
+      isSubmitting: false,
+      isModalVisible: false,
+      modalState: 'loading',
+      loadingDots: '',
+      loadingInterval: null,
+      recommendation: null,
+      loadingMessages: [
+        "당신의 오늘을 읽고 있어요",
+        "AI가 마음을 분석 중이에요",
+        "당신에게 어울리는 노래를 찾는 중이에요",
+        "추천 이유를 정성껏 작성 중입니다",
+        "거의 다 됐어요! 잠시만요~"
+      ],
+      currentMessageIndex: 0,
+      messageInterval: null,
+    };
+  },
+>>>>>>> Stashed changes
 
 const API_BASE_URL = `http://${window.location.hostname}:8000`;
 
+<<<<<<< Updated upstream
 const API_URL = `${API_BASE_URL}/api/diaries/`;
 
 const newDiary = ref({ title: '', content: '' });
@@ -94,6 +139,56 @@ watch(isModalVisible, (newValue) => {
     }
   }
 });
+=======
+      this.isSubmitting = true;
+      this.recommendation = null;
+      this.showLoadingModal();
+
+      const token = localStorage.getItem('access_token');
+
+      try {
+        const res = await axios.post(`${API_BASE_URL}diaries/`, {
+          title: this.newDiary.title,
+          content: this.newDiary.content,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (res.data) {
+          if (res.data.recommendation_song) {
+            this.recommendation = res.data;
+          } else if (res.data.recommendation) {
+            this.recommendation = res.data.recommendation;
+          }
+          console.log("모달에 표시될 데이터:", this.recommendation);
+        }
+
+        this.modalState = 'success';
+      } catch (error) {
+        console.error('일기 저장 실패:', error.res?.data || error);
+
+        if (error.res?.status === 401) {
+          alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+          this.$router.push('/login');
+        } else {
+          alert('저장 중 오류가 발생했습니다.');
+        }
+        this.isModalVisible = false;
+      } finally {
+        this.stopLoadingDots();
+        this.isSubmitting = false;
+      }
+    },
+
+    showLoadingModal() {
+      this.isModalVisible = true;
+      this.modalState = 'loading';
+      this.currentMessageIndex = 0;
+      this.loadingDots = '';
+      this.startLoadingDots();
+>>>>>>> Stashed changes
 
 
 const musicQueryDatabase = {
@@ -126,6 +221,7 @@ function generateYoutubeLink(emotion) {
   return youtubeSearchUrl;
 }
 
+<<<<<<< Updated upstream
 async function submitDiary() {
   if (!newDiary.value.title || !newDiary.value.content) {
     alert("제목과 내용을 모두 입력해주세요.");
@@ -168,114 +264,126 @@ function closeModalAndRedirect() {
   max-width: 700px; 
   margin: 2rem auto; 
   padding: 1rem; 
+=======
+<style scoped>
+.page-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+>>>>>>> Stashed changes
 }
 
-.app-header { 
-  text-align: center; 
-  margin-bottom: 2rem; 
-  color: #ffffff; 
+.app-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #ffffff;
 }
 
-.app-header h1 { 
-  font-size: 2.8rem; 
-  font-weight: 700; 
-  margin-bottom: 0.5rem; 
+.app-header h1 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
-.app-header p { 
-  font-size: 1.1rem; 
-  color: #ffffff; 
+.app-header p {
+  font-size: 1.1rem;
+  color: #ffffff;
 }
 
-.content-wrapper { 
-  background-color: var(--bg-light, #fff); 
-  padding: 2.5rem; 
-  border-radius: 16px; 
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08); 
+.content-wrapper {
+  background-color: var(--bg-light, #fff);
+  padding: 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
-.form-input, .form-textarea { 
-  width: 100%; 
-  padding: 1rem; 
-  border: 1px solid var(--border-color, #e0e0e0); 
-  border-radius: 10px; 
-  font-size: 1rem; 
-  margin-bottom: 1.5rem; 
-  transition: box-shadow 0.2s, border-color 0.2s; 
-  box-sizing: border-box; 
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  box-sizing: border-box;
 }
 
-.form-input:focus, .form-textarea:focus { 
-  outline: none; 
-  border-color: var(--primary-color, #869a69); 
-  box-shadow: 0 0 0 3px rgba(134, 154, 105, 0.3); 
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #869a69);
+  box-shadow: 0 0 0 3px rgba(134, 154, 105, 0.3);
 }
 
-.button-group { 
-  display: flex; 
-  gap: 1rem; 
+.button-group {
+  display: flex;
+  gap: 1rem;
 }
 
-.submit-button, .list-button { 
-  flex-grow: 1; 
-  padding: 1rem; 
-  border-radius: 10px; 
-  font-size: 1.1rem; 
-  font-weight: 600; 
-  cursor: pointer; 
-  transition: all 0.2s; 
-  text-align: center; 
-  text-decoration: none; 
+.submit-button,
+.list-button {
+  flex-grow: 1;
+  padding: 1rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  text-decoration: none;
 }
 
-.submit-button { 
-  border: none; 
-  background-color: var(--primary-color, #869a69); 
-  color: var(--text-light, #fff); 
+.submit-button {
+  border: none;
+  background-color: var(--primary-color, #869a69);
+  color: var(--text-light, #fff);
 }
 
-.submit-button:hover { 
-  background-color: #708255; 
-  transform: translateY(-2px); 
+.submit-button:hover {
+  background-color: #708255;
+  transform: translateY(-2px);
 }
 
-.submit-button:disabled { 
-  background-color: #ccc; 
-  cursor: not-allowed; 
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
-.list-button { 
-  background-color: #f0f0f0; 
-  color: #555; 
-  border: 1px solid #ddd; 
+.list-button {
+  background-color: #f0f0f0;
+  color: #555;
+  border: 1px solid #ddd;
 }
 
-.list-button:hover { 
-  background-color: #e5e5e5; 
-  border-color: #ccc; 
-  transform: translateY(-2px); 
+.list-button:hover {
+  background-color: #e5e5e5;
+  border-color: #ccc;
+  transform: translateY(-2px);
 }
 
-.loading-content, .analysis-content { 
-  padding: 1rem; 
-  text-align: center; 
+.loading-content,
+.analysis-content {
+  padding: 1rem;
+  text-align: center;
 }
 
-.loading-content p { 
-  font-size: 1.2rem; 
-  font-weight: 500; 
-  color: #555; 
+.loading-content p {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #555;
 }
 
-.analysis-content p { 
-  margin-bottom: 1.5rem; 
+.analysis-content p {
+  margin-bottom: 1.5rem;
+  color: #444;
 }
 
-.analysis-content strong { 
-  color: var(--primary-color, #869a69); 
-  font-size: 1.2em; 
+.analysis-content strong {
+  color: var(--primary-color, #869a69);
+  font-size: 1.1em;
 }
 
+<<<<<<< Updated upstream
 .music-recommendation { 
   background-color: #f7f8f6; 
   padding: 1.5rem; 
@@ -311,6 +419,69 @@ function closeModalAndRedirect() {
 .youtube-link-button:hover { 
   background-color: #cc0000; 
   transform: scale(1.05); 
+=======
+.music-recommendation {
+  background-color: #f7f8f6;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 5px solid var(--primary-color, #869a69);
+  text-align: center;
+  margin-bottom: 1.5rem;
+  overflow: visible;
+}
+
+.music-recommendation h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  color: #555;
+  font-weight: bold;
+}
+
+.scroll-box {
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 1.2rem;
+  padding: 0 10px;
+  text-align: left;
+}
+
+.scroll-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-box::-webkit-scrollbar-thumb {
+  background: #869a69;
+  border-radius: 10px;
+}
+
+.scroll-box::-webkit-scrollbar-track {
+  background: #eeeeee;
+}
+
+.recommendation-text {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.7;
+  margin: 0 !important;
+  word-break: keep-all;
+}
+
+.youtube-link-button {
+  display: block;
+  padding: 0.8rem;
+  border-radius: 8px;
+  background-color: #FF0000;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.youtube-link-button:hover {
+  background-color: #cc0000;
+  transform: scale(1.02);
+>>>>>>> Stashed changes
 }
 
 .spinner {
@@ -323,12 +494,30 @@ function closeModalAndRedirect() {
   animation: spin 1s linear infinite;
 }
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+<<<<<<< Updated upstream
+=======
+
+.modal-close-button {
+  margin-top: 10px;
+  padding: 12px 30px;
+  background-color: #869a69;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-@media (max-width: 640px) {
-  .content-wrapper { padding: 1.5rem; }
-  .button-group { flex-direction: column; }
+.modal-close-button:hover {
+  background-color: #708255;
 }
+>>>>>>> Stashed changes
 </style>

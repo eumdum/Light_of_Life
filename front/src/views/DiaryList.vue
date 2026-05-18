@@ -57,9 +57,13 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
+<<<<<<< Updated upstream
 // 현재 브라우저의 주소(hostname)를 사용해서 API 서버의 기본 주소를 동적으로 만듬.
 const API_BASE_URL = `http://${window.location.hostname}:8000`;
 const API_URL = `${API_BASE_URL}/api/diaries/`;
+=======
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+>>>>>>> Stashed changes
 
 const diaries = ref([]);
 const showDeleteModal = ref(false);
@@ -71,10 +75,22 @@ function formatDate(dateString) {
   return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
 }
 
+<<<<<<< Updated upstream
 async function fetchDiaries() {
   try {
     const response = await axios.get(API_URL);
     diaries.value = response.data;
+=======
+const fetchDiaries = async () => {
+  try {
+    const token = localStorage.getItem('access_token'); 
+    const res = await axios.get('http://localhost:8000/api/diaries/', {
+      headers: {
+        Authorization: `Bearer ${token}` 
+      }
+    });
+    diaries.value = res.data;
+>>>>>>> Stashed changes
   } catch (error) {
     console.error("일기를 불러오는 데 실패했습니다:", error);
   }
@@ -82,6 +98,15 @@ async function fetchDiaries() {
 
 function openDeleteModal(diary) {
   selectedDiary.value = diary;
+<<<<<<< Updated upstream
+=======
+  showDetailModal.value = true;
+};
+
+const openDeleteModal = (diary) => {
+  selectedDiary.value = diary;
+  showDeleteModal.value = true; 
+>>>>>>> Stashed changes
   showDeleteModal.value = true;
 }
 
@@ -90,6 +115,7 @@ function closeDeleteModal() {
   selectedDiary.value = null;
 }
 
+<<<<<<< Updated upstream
 async function deleteDiary() {
   if (!selectedDiary.value) return;
 
@@ -108,6 +134,24 @@ async function deleteDiary() {
     alert('일기 삭제에 실패했습니다.');
   } finally {
     isDeleting.value = false;
+=======
+const deleteDiary = async () => {
+  const token = localStorage.getItem('access_token');
+
+  try {
+    await axios.delete(`${API_URL}${selectedDiary.value.id}/`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    await fetchDiaries();
+    closeDetailModal();
+    alert("일기가 삭제되었습니다.");
+  } catch (error) {
+    console.error("삭제 실패:", error.res?.data || error);
+    alert("삭제 중 오류가 발생했습니다.");
+>>>>>>> Stashed changes
   }
 }
 
@@ -252,7 +296,68 @@ onMounted(() => {
   text-align: center;
 }
 
+<<<<<<< Updated upstream
 .modal-content h3 {
+=======
+.modal-header {
+  border-bottom: 2px solid #f0f4e8;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.detail-date {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.diary-text-section {
+  margin-bottom: 2rem;
+}
+
+.diary-text {
+  line-height: 1.8;
+  color: #444;
+  white-space: pre-wrap;
+}
+
+.ai-analysis-section {
+  background: #f7f8f6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 5px solid #869a69;
+}
+
+.ai-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ai-badge {
+  background: #869a69;
+  color: white;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.ai-emotion {
+  color: #333;
+  font-size: 1rem;
+}
+
+.ai-recommendation .song-title {
+  font-weight: bold;
+  color: #444;
+>>>>>>> Stashed changes
   margin-bottom: 0.8rem;
   font-size: 1.3rem;
   color: #222;
@@ -261,7 +366,42 @@ onMounted(() => {
 .modal-content p {
   color: #555;
   line-height: 1.6;
+<<<<<<< Updated upstream
   margin-bottom: 1.5rem;
+=======
+  margin: 0;
+}
+
+.youtube-btn {
+  display: block;
+  background: #FF0000;
+  color: white;
+  text-align: center;
+  padding: 0.8rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.modal-footer {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.close-btn {
+  background: #869a69;
+  color: white;
+  border: none;
+  padding: 0.8rem 2.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.delete-confirm-modal {
+  max-width: 350px;
+  text-align: center;
+>>>>>>> Stashed changes
 }
 
 .modal-actions {
@@ -295,12 +435,59 @@ onMounted(() => {
   color: white;
 }
 
+<<<<<<< Updated upstream
 .confirm-delete-button:hover {
   background: #c9302c;
+=======
+.scroll-box::-webkit-scrollbar {
+  width: 5px;
+>>>>>>> Stashed changes
 }
 
 .confirm-delete-button:disabled {
   background: #e3a3a1;
   cursor: not-allowed;
 }
+<<<<<<< Updated upstream
 </style>
+=======
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px 0;
+}
+
+.header-side {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+h2 {
+  flex: 2;
+  text-align: center;
+  margin: 0;
+  color: #556b2f;
+}
+
+.calendar-view-btn {
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #869a69;
+  background-color: white;
+  padding: 8px 16px;
+  border: 1px solid #869a69;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.calendar-view-btn:hover {
+  background-color: #869a69;
+  color: white;
+}
+</style>
+>>>>>>> Stashed changes

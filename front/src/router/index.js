@@ -20,4 +20,23 @@ const router = createRouter({
   routes
 })
 
+<<<<<<< Updated upstream
 export default router
+=======
+router.beforeEach((to, from, next) => {
+  const isLoggedIn = !!localStorage.getItem('access_token');
+
+  if (to.path === '/') {
+    next();
+  }
+  
+  else if (to.path !== '/login' && to.path !== '/signup' && !isLoggedIn) {
+    alert('로그인이 필요한 서비스입니다.');
+    next('/login');
+  } else {
+    next();
+  }
+});
+
+export default router;
+>>>>>>> Stashed changes

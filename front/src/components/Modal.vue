@@ -3,31 +3,31 @@
     <div class="modal-overlay" >
       <div class="modal-window">
         <header class="modal-header">
-          <!-- 부모 컴포넌트에서 헤더 내용을 전달받는 부분 -->
           <slot name="header">
             알림
           </slot>
         </header>
 
         <main class="modal-body">
-          <!-- 부모 컴포넌트에서 메인 내용을 전달받는 부분 -->
           <slot>
             모달 내용입니다.
           </slot>
         </main>
+<<<<<<< Updated upstream
 
         <footer class="modal-footer">
           <button @click="$emit('close')" class="modal-close-button">
             확인
           </button>
         </footer>
+=======
+>>>>>>> Stashed changes
       </div>
     </div>
   </transition>
 </template>
 
 <script setup>
-// 부모 컴포넌트에게 'close' 이벤트를 보낼 수 있도록 정의
 defineEmits(['close']);
 </script>
 

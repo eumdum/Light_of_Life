@@ -74,14 +74,6 @@ MIDDLEWARE = [
     
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True 
-
-
-CORS_ALLOW_ALL_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-]
-
 CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = "back.urls"
@@ -168,3 +160,5 @@ STATICFILES_DIRS = [
 # 일기에 이미지를 첨부하는 기능에서 파일들을 저장하는 설정
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+GOOGLE_API_KEY = env('GOOGLE_API_KEY', default='')

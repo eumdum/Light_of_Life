@@ -12,6 +12,7 @@ class DiarySerializer(serializers.ModelSerializer):
             'created_at', 
             'updated_at', 
             'emotion',
+<<<<<<< Updated upstream
 
             # top1, top2, 전체감정
             "emotion_label",
@@ -23,6 +24,9 @@ class DiarySerializer(serializers.ModelSerializer):
             # [다음 단계 LLM용]
             "keywords",
             "emotion_summary",
+=======
+            "recommendation_song",
+>>>>>>> Stashed changes
             "recommendation_reason",
             "music_query",
             ]
@@ -32,6 +36,7 @@ class DiarySerializer(serializers.ModelSerializer):
             'created_at', 
             'updated_at', 
             'emotion',
+<<<<<<< Updated upstream
             "emotion_label",
             "emotion_score",
             "sub_emotion_label",
@@ -42,4 +47,9 @@ class DiarySerializer(serializers.ModelSerializer):
             "recommendation_reason",
             "music_query",
             
+=======
+            "recommendation_song",
+            "recommendation_reason",
+            "youtube_url",
+>>>>>>> Stashed changes
             ]
