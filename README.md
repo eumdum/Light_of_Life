@@ -71,11 +71,11 @@ Light of Life는 사용자의 감정을 단순히 기록하는 것을 넘어, AI
 * **[기존: 1세대 하이브리드 아키텍처]**
     일기 작성 ➡️ Hugging Face API (감정 텍스트 분류) ➡️ 결과 파싱 ➡️ Gemini API 전달 (음악 추천 및 이유 생성) ➡️ 프론트엔드 반환 `(총 2회 API 호출)`
 * **[현재: 2세대 단독 올인원 아키텍처]**
-    일기 작성 ➡️ Gemini 2.0 Flash API (감정 맥락 분석 + 음악 매칭 + 유튜브 URL 검색을 프롬프트 엔지니어링으로 동시 처리) ➡️ 구조화된 JSON 반환 `(단 1회 API 호출)`
+    일기 작성 ➡️ Gemini 2.5 Flash API (감정 맥락 분석 + 음악 매칭 + 유튜브 URL 검색을 프롬프트 엔지니어링으로 동시 처리) ➡️ 구조화된 JSON 반환 `(단 1회 API 호출)`
 
 ### 📈 아키텍처 비교 분석 결과
 
-| 비교 지표 | [기존] Hugging Face + Gemini 하이브리드 | [현재] Gemini 2.0 Flash 단독 (최적화) |
+| 비교 지표 | [기존] Hugging Face + Gemini 하이브리드 | [현재] Gemini 2.5 Flash 단독 (최적화) |
 | :--- | :--- | :--- |
 | **시스템 복잡도** | **높음** (두 채널의 API 가동, 서로 다른 Response 포맷 핸들링 필요) | **낮음** (단일 API 엔드포인트 관리로 백엔드 코드 경량화) |
 | **네트워크 호출 (Round Trip)** | 총 2회 (Client ➡️ 서버 ➡️ HF API ➡️ Gemini API) | **단 1회** (Client ➡️ 서버 ➡️ Gemini API) |
@@ -118,7 +118,7 @@ Light of Life는 사용자의 감정을 단순히 기록하는 것을 넘어, AI
 * Simple JWT (토큰 기반 사용자 인증 및 인가 관리)
 
 ### 🤖 AI & Infrastructure
-* Google Gemini 2.0 Flash API (Structured JSON Mode)
+* Google Gemini 2.5 Flash API (Structured JSON Mode)
 * Git / GitHub (형상 관리 및 브랜치 전략)
 
 ### 기타
