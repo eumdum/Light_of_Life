@@ -69,12 +69,12 @@
       </div>
     </div>
 
-    <div v-if="showDeleteModal" class="modal-overlay" @click="closeDeleteModal">
+    <div v-if="showDeleteModal" class="modal-overlay" @click="closeDetailModal">
       <div class="modal-content delete-confirm-modal" @click.stop>
         <h3>일기를 삭제할까요?</h3>
         <p>삭제한 기록은 되살릴 수 없습니다.</p>
         <div class="modal-actions">
-          <button class="cancel-btn" @click="closeDeleteModal">취소</button>
+          <button class="cancel-btn" @click="closeDetailModal">취소</button>
           <button class="confirm-delete-btn" @click="deleteDiary">삭제</button>
         </div>
       </div>
@@ -102,7 +102,7 @@ const calendarTitle = computed(() => {
 const fetchDiaries = async () => {
   try {
     const token = localStorage.getItem('access_token'); 
-    const res = await axios.get('http://localhost:8000/api/diaries/', {
+    const res = await axios.get(`${API_BASE_URL}diaries/`, {
       headers: {
         Authorization: `Bearer ${token}` 
       }
@@ -126,7 +126,6 @@ const openDetailModal = (diary) => {
 
 const openDeleteModal = (diary) => {
   selectedDiary.value = diary;
-  showDeleteModal.value = true; 
   showDeleteModal.value = true;
 };
 
@@ -140,17 +139,17 @@ const deleteDiary = async () => {
   const token = localStorage.getItem('access_token');
 
   try {
-    await axios.delete(`${API_URL}${selectedDiary.value.id}/`, {
+    await axios.delete(`${API_BASE_URL}diaries/${selectedDiary.value.id}/`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
 
-    await fetchDiaries();
+    await fetchDiaries(); 
     closeDetailModal();
     alert("일기가 삭제되었습니다.");
   } catch (error) {
-    console.error("삭제 실패:", error.res?.data || error);
+    console.error("삭제 실패:", error.response?.data || error);
     alert("삭제 중 오류가 발생했습니다.");
   }
 };

@@ -157,7 +157,6 @@ STATICFILES_DIRS = [
 # 배포환경에서의 정적 파일 모아두는 곳
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# 일기에 이미지를 첨부하는 기능에서 파일들을 저장하는 설정
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

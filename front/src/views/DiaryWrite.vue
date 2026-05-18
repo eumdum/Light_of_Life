@@ -80,10 +80,10 @@ export default {
       loadingInterval: null,
       recommendation: null,
       loadingMessages: [
-        "당신의 오늘을 읽고 있어요",
-        "AI가 마음을 분석 중이에요",
-        "당신에게 어울리는 노래를 찾는 중이에요",
-        "추천 이유를 정성껏 작성 중입니다",
+        "당신의 오늘을 읽고 있어요.",
+        "AI가 마음을 분석 중이에요.",
+        "당신에게 어울리는 노래를 찾는 중이에요.",
+        "추천 이유를 정성껏 작성 중입니다.",
         "거의 다 됐어요! 잠시만요~"
       ],
       currentMessageIndex: 0,
